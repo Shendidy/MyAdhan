@@ -3,13 +3,13 @@
   "status": "OK",
   "data": {
     "timings": {
-      "Fajr": "02:04",
+      "Fajr": "03:19",
       "Sunrise": "05:48",
-      "Dhuhr": "02:06",
-      "Asr": "02:08",
+      "Dhuhr": "05:06",
+      "Asr": "05:08",
       "Sunset": "18:24",
-      "Maghrib": "02:10",
-      "Isha": "02:12",
+      "Maghrib": "05:10",
+      "Isha": "05:12",
       "Imsak": "04:04",
       "Midnight": "00:06",
       "Firstthird": "22:12",

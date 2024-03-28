@@ -47,8 +47,8 @@ public class Program
         app.Services.UseScheduler(scheduler =>
         {
             scheduler.Schedule<GetAdhanTimings>()
-            //.EverySecond().Once();
-            .DailyAt(0,1);
+            .EverySecond().Once();
+            //.DailyAt(0,1);
         });
 
         app.Run();

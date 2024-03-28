@@ -26,7 +26,7 @@ namespace MyAdhan.Scheduler.Services
             else
             {
                 //string jsonFilePath = @".\JsonFiles\AdhanAPIResponse.json";
-                //string json = File.ReadAllText(jsonFilePath);
+                //json = File.ReadAllText(jsonFilePath);
 
                 dynamic details = JsonConvert.DeserializeObject<dynamic>(json);
 

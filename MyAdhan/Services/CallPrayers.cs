@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using MyAdhan.Scheduler.Models;
 
+using System.Net;
+
 namespace MyAdhan.Scheduler.Services
 {
     public class CallPrayers : ICallPrayers
@@ -34,6 +36,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToFajr);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Fajr...");
+                MakeCall("https://api-v2.voicemonkey.io/trigger?token=867cf7a5ac33e0262126355f570b865f_693429afb5d1bc070e6dc54c65ce1aec&device=fajr-prayer-trigger");
             }
 
             // if now is <= Dhuhr
@@ -89,6 +92,19 @@ namespace MyAdhan.Scheduler.Services
             }
 
             _logger.LogInformation($"Called all prayers for today...");
+        }
+
+        private void MakeCall(string prayerUrl)
+        {
+            using (var client = new HttpClient())
+            {
+                var url = new Uri(prayerUrl);
+
+                var result = client.GetAsync(url).Result;
+                var json = result.Content.ReadAsStringAsync().Result;
+
+                _logger.LogInformation($"{json}");
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ namespace MyAdhan.Scheduler.Services
 
             var baseUri = "https://api.aladhan.com";
             var endpoint = "timingsByAddress";
-            var dateToGet = "28-03-2024";
+            var dateToGet = DateTime.Now.ToString("dd-MM-yyyy");
             var paramAddress = "Romford,UK";
             var paramMethod = "15";
             var paramTune = "0,-2,0,2,2,2,0,2,0";
@@ -29,7 +29,6 @@ namespace MyAdhan.Scheduler.Services
             using (var client = new HttpClient())
             {
                 var url = new Uri($"{baseUri}/{endpoint}/{dateToGet}?address={paramAddress}&method={paramMethod}&tune={paramTune}");
-                _logger.LogInformation(url.ToString());
 
                 var result = client.GetAsync(url).Result;
                 var json = result.Content.ReadAsStringAsync().Result;
