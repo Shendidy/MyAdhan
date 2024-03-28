@@ -1,0 +1,86 @@
+{
+  "code": 200,
+  "status": "OK",
+  "data": {
+    "timings": {
+      "Fajr": "02:04",
+      "Sunrise": "05:48",
+      "Dhuhr": "02:06",
+      "Asr": "02:08",
+      "Sunset": "18:24",
+      "Maghrib": "02:10",
+      "Isha": "02:12",
+      "Imsak": "04:04",
+      "Midnight": "00:06",
+      "Firstthird": "22:12",
+      "Lastthird": "02:00"
+    },
+    "date": {
+      "readable": "28 Mar 2024",
+      "timestamp": "1711436400",
+      "hijri": {
+        "date": "16-09-1445",
+        "format": "DD-MM-YYYY",
+        "day": "16",
+        "weekday": {
+          "en": "Al Thalaata",
+          "ar": "الثلاثاء"
+        },
+        "month": {
+          "number": 9,
+          "en": "Ramaḍān",
+          "ar": "رَمَضان"
+        },
+        "year": "1445",
+        "designation": {
+          "abbreviated": "AH",
+          "expanded": "Anno Hegirae"
+        },
+        "holidays": []
+      },
+      "gregorian": {
+        "date": "28-03-2024",
+        "format": "DD-MM-YYYY",
+        "day": "26",
+        "weekday": {
+          "en": "Tuesday"
+        },
+        "month": {
+          "number": 3,
+          "en": "March"
+        },
+        "year": "2024",
+        "designation": {
+          "abbreviated": "AD",
+          "expanded": "Anno Domini"
+        }
+      }
+    },
+    "meta": {
+      "latitude": 51.509648,
+      "longitude": -0.099076,
+      "timezone": "Europe/London",
+      "method": {
+        "id": 15,
+        "name": "Moonsighting Committee Worldwide (Moonsighting.com)",
+        "params": {
+          "shafaq": "general"
+        }
+      },
+      "latitudeAdjustmentMethod": "NONE",
+      "midnightMode": "STANDARD",
+      "school": "STANDARD",
+      "offset": {
+        "Imsak": 0,
+        "Fajr": "-2",
+        "Sunrise": 0,
+        "Dhuhr": "2",
+        "Asr": "2",
+        "Maghrib": "2",
+        "Sunset": 0,
+        "Isha": "2",
+        "Midnight": 0
+      }
+    }
+  }
+}
