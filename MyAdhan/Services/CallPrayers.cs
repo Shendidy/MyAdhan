@@ -28,7 +28,11 @@ namespace MyAdhan.Scheduler.Services
             {
                 var msToFajr = Convert.ToInt32((fajr - DateTime.Now).TotalMilliseconds);
 
-                if (msToFajr > 5000) await Task.Delay(msToFajr);
+                if (msToFajr > 1000)
+                {
+                    _logger.LogInformation($"Waiting for Fajr in {TimeSpan.FromMilliseconds(msToFajr)}");
+                    await Task.Delay(msToFajr);
+                }
                 _logger.LogInformation($"{DateTime.Now} Calling for Fajr...");
             }
 
@@ -37,7 +41,11 @@ namespace MyAdhan.Scheduler.Services
             {
                 var msToDhuhr = Convert.ToInt32((dhuhr - DateTime.Now).TotalMilliseconds);
 
-                if (msToDhuhr > 5000) await Task.Delay(msToDhuhr);
+                if (msToDhuhr > 1000)
+                {
+                    _logger.LogInformation($"Waiting for Dhuhr in {TimeSpan.FromMilliseconds(msToDhuhr)}");
+                    await Task.Delay(msToDhuhr);
+                }
                 _logger.LogInformation($"{DateTime.Now} Calling for Dhuhr...");
             }
 
@@ -46,7 +54,11 @@ namespace MyAdhan.Scheduler.Services
             {
                 var msToAsr = Convert.ToInt32((asr - DateTime.Now).TotalMilliseconds);
 
-                if (msToAsr > 5000) await Task.Delay(msToAsr);
+                if (msToAsr > 1000)
+                {
+                    _logger.LogInformation($"Waiting for Asr in {TimeSpan.FromMilliseconds(msToAsr)}");
+                    await Task.Delay(msToAsr);
+                }
                 _logger.LogInformation($"{DateTime.Now} Calling for Asr...");
             }
 
@@ -55,7 +67,11 @@ namespace MyAdhan.Scheduler.Services
             {
                 var msToMaghrib = Convert.ToInt32((maghrib - DateTime.Now).TotalMilliseconds);
 
-                if (msToMaghrib > 5000) await Task.Delay(msToMaghrib);
+                if (msToMaghrib > 1000)
+                {
+                    _logger.LogInformation($"Waiting for Maghrib in {TimeSpan.FromMilliseconds(msToMaghrib)}");
+                    await Task.Delay(msToMaghrib);
+                }
                 _logger.LogInformation($"{DateTime.Now} Calling for Mahgrib...");
             }
 
@@ -64,7 +80,11 @@ namespace MyAdhan.Scheduler.Services
             {
                 var msToIsha = Convert.ToInt32((isha - DateTime.Now).TotalMilliseconds);
 
-                if (msToIsha > 5000) await Task.Delay(msToIsha);
+                if (msToIsha > 1000)
+                {
+                    _logger.LogInformation($"Waiting for Isha in {TimeSpan.FromMilliseconds(msToIsha)}");
+                    await Task.Delay(msToIsha);
+                }
                 _logger.LogInformation($"{DateTime.Now} Calling for Isha...");
             }
 

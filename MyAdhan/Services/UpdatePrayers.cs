@@ -17,7 +17,7 @@ namespace MyAdhan.Scheduler.Services
             _callPrayers = callPrayers;
         }
 
-        public void Update()
+        public void Update(string json)
         {
             if (_prayers == null)
             {
@@ -25,8 +25,8 @@ namespace MyAdhan.Scheduler.Services
             }
             else
             {
-                string jsonFilePath = @".\JsonFiles\AdhanAPIResponse.json";
-                string json = File.ReadAllText(jsonFilePath);
+                //string jsonFilePath = @".\JsonFiles\AdhanAPIResponse.json";
+                //string json = File.ReadAllText(jsonFilePath);
 
                 dynamic details = JsonConvert.DeserializeObject<dynamic>(json);
 

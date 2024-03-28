@@ -2,6 +2,6 @@
 {
     public interface IUpdatePrayers
     {
-        void Update();
+        void Update(string json);
     }
 }
