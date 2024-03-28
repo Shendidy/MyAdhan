@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MyAdhan.Scheduler.Models;
 
-using System.Net;
-
 namespace MyAdhan.Scheduler.Services
 {
     public class CallPrayers : ICallPrayers
@@ -25,7 +23,6 @@ namespace MyAdhan.Scheduler.Services
             var isha = today.ToDateTime(TimeOnly.Parse(_prayers.Isha));
 
             // if now is <= Fajr
-            // use delayers until Fajr, then call end point
             if (DateTime.Now <= fajr)
             {
                 var msToFajr = Convert.ToInt32((fajr - DateTime.Now).TotalMilliseconds);
@@ -36,7 +33,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToFajr);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Fajr...");
-                MakeCall("https://api-v2.voicemonkey.io/trigger?token=867cf7a5ac33e0262126355f570b865f_693429afb5d1bc070e6dc54c65ce1aec&device=fajr-prayer-trigger");
+                MakeCall(getConfig("VoiceMonkeyTriggers, Fajr"));
             }
 
             // if now is <= Dhuhr
@@ -50,6 +47,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToDhuhr);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Dhuhr...");
+                MakeCall(getConfig("VoiceMonkeyTriggers, Dhuhr"));
             }
 
             // if now is <= Asr
@@ -63,6 +61,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToAsr);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Asr...");
+                MakeCall(getConfig("VoiceMonkeyTriggers, Asr"));
             }
 
             // if now is <= Maghrib
@@ -76,6 +75,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToMaghrib);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Mahgrib...");
+                MakeCall(getConfig("VoiceMonkeyTriggers, Maghrib"));
             }
 
             // if now is <= Isha
@@ -89,6 +89,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToIsha);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Isha...");
+                MakeCall(getConfig("VoiceMonkeyTriggers, Isha"));
             }
 
             _logger.LogInformation($"Called all prayers for today...");
@@ -106,5 +107,8 @@ namespace MyAdhan.Scheduler.Services
                 _logger.LogInformation($"{json}");
             }
         }
+
+        private string getConfig(string path)
+            => ConfigurationManager.GetConfigValue(path);
     }
 }

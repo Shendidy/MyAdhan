@@ -10,7 +10,9 @@ namespace MyAdhan.Scheduler.Services
         private readonly ILogger<UpdatePrayers>? _logger;
         public IPrayers _prayers;
         public ICallPrayers _callPrayers;
-        public UpdatePrayers(ILogger<UpdatePrayers> logger, IPrayers prayers, ICallPrayers callPrayers)
+        public UpdatePrayers(ILogger<UpdatePrayers> logger
+            , IPrayers prayers
+            , ICallPrayers callPrayers)
         {
             _logger = logger;
             _prayers = prayers;
@@ -25,28 +27,34 @@ namespace MyAdhan.Scheduler.Services
             }
             else
             {
+                //Use these values for testing
                 //string jsonFilePath = @".\JsonFiles\AdhanAPIResponse.json";
                 //json = File.ReadAllText(jsonFilePath);
 
                 dynamic details = JsonConvert.DeserializeObject<dynamic>(json);
 
-                int hijriMonthNumber = Int32.Parse(details.SelectToken("data.date.hijri.month.number").ToString());
+                int hijriMonthNumber = Int32.Parse(details.SelectToken(getConfig("PrayersApiResponse, HijriMonthNumber")).ToString());
                 string hijriMonth = ((ArabicMonths)hijriMonthNumber).ToString();
-                string hijriYear = details.SelectToken("data.date.hijri.year").ToString();
-                string hijriDay = details.SelectToken("data.date.hijri.day").ToString();
+                string hijriYear = details.SelectToken(getConfig("PrayersApiResponse, HijriYear"));
+                string hijriDay = details.SelectToken(getConfig("PrayersApiResponse, HijriDay"));
 
-                _prayers.Fajr = details.SelectToken("data.timings.Fajr").ToString();
-                _prayers.Dhuhr = details.SelectToken("data.timings.Dhuhr").ToString();
-                _prayers.Asr = details.SelectToken("data.timings.Asr").ToString();
-                _prayers.Maghrib = details.SelectToken("data.timings.Maghrib").ToString();
-                _prayers.Isha = details.SelectToken("data.timings.Isha").ToString();
+                _prayers.Fajr = details.SelectToken(getConfig("PrayersApiResponse, Fajr"));
+                _prayers.Dhuhr = details.SelectToken(getConfig("PrayersApiResponse, Dhuhr"));
+                _prayers.Asr = details.SelectToken(getConfig("PrayersApiResponse, Asr"));
+                _prayers.Maghrib = details.SelectToken(getConfig("PrayersApiResponse, Maghrib"));
+                _prayers.Isha = details.SelectToken(getConfig("PrayersApiResponse, Isha"));
                 _prayers.DateHijri = $"{hijriDay} {hijriMonth} {hijriYear}";
-                _prayers.Date = DateOnly.ParseExact(
-                    details.SelectToken("data.date.gregorian.date").ToString()
-                    , "dd-MM-yyyy");
+
+                var datePath = getConfig("PrayersApiResponse, Date");
+                var dateFormat = getConfig("PrayersApiResponse, DateFormat");
+                var date = details.SelectToken(datePath).ToString();
+                _prayers.Date = DateOnly.ParseExact(date, dateFormat);
 
                 _callPrayers.CallEndpoints();
             }
         }
+
+        private string getConfig(string path)
+            => ConfigurationManager.GetConfigValue(path);
     }
 }

@@ -16,15 +16,14 @@ namespace MyAdhan.Scheduler.Services
 
         public Task Invoke()
         {
-            _logger.LogInformation($"{DateTime.Now} Doing something then saving the new adhan times to json file for now...");
+            _logger.LogInformation($"{DateTime.Now} - Getting new prayer times.");
 
-
-            var baseUri = "https://api.aladhan.com";
-            var endpoint = "timingsByAddress";
+            var baseUri = getConfig("PrayersApi, BaseUri");
+            var endpoint = getConfig("PrayersApi, Endpoint");
             var dateToGet = DateTime.Now.ToString("dd-MM-yyyy");
-            var paramAddress = "Romford,UK";
-            var paramMethod = "15";
-            var paramTune = "0,-2,0,2,2,2,0,2,0";
+            var paramAddress = getConfig("PrayersApi, ParamAddress");
+            var paramMethod = getConfig("PrayersApi, ParamMethod");
+            var paramTune = getConfig("PrayersApi, ParamTune");
 
             using (var client = new HttpClient())
             {
@@ -38,5 +37,8 @@ namespace MyAdhan.Scheduler.Services
 
             return Task.FromResult(true);
         }
+
+        private string getConfig(string path)
+            => ConfigurationManager.GetConfigValue(path);
     }
 }

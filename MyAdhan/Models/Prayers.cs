@@ -9,5 +9,7 @@
         public string Isha { get; set; }
         public DateOnly Date { get; set; }
         public string DateHijri { get; set; }
+
+        public IPrayers GetPrayers() => this;
     }
 }

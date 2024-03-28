@@ -1,4 +1,6 @@
-﻿namespace MyAdhan.Scheduler.Models
+﻿using System.Runtime.CompilerServices;
+
+namespace MyAdhan.Scheduler.Models
 {
     public interface IPrayers
     {
@@ -9,5 +11,7 @@
         string DateHijri { get; set; }
         string Isha { get; set; }
         string Maghrib { get; set; }
+
+        IPrayers GetPrayers();
     }
 }
