@@ -39,6 +39,7 @@ namespace MyAdhan.Scheduler.Services
                 string hijriDay = details.SelectToken(getConfig("PrayersApiResponse, HijriDay"));
 
                 _prayers.Fajr = details.SelectToken(getConfig("PrayersApiResponse, Fajr"));
+                //_prayers.Fajr = DateTime.Now.AddMinutes(2).ToString("hh:mm"); //use for docker container tests
                 _prayers.Dhuhr = details.SelectToken(getConfig("PrayersApiResponse, Dhuhr"));
                 _prayers.Asr = details.SelectToken(getConfig("PrayersApiResponse, Asr"));
                 _prayers.Maghrib = details.SelectToken(getConfig("PrayersApiResponse, Maghrib"));
