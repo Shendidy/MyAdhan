@@ -33,39 +33,60 @@ namespace MyAdhan.Scheduler.Services
 
                 dynamic details = JsonConvert.DeserializeObject<dynamic>(json);
 
-                int hijriMonthNumber = Int32.Parse(details.SelectToken(getConfig("PrayersApiResponse, HijriMonthNumber")).ToString());
+                int hijriMonthNumber = Int32.Parse(details.SelectToken(GetConfig("PrayersApiResponse, HijriMonthNumber")).ToString());
                 string hijriMonth = ((ArabicMonths)hijriMonthNumber).ToString();
-                string hijriYear = details.SelectToken(getConfig("PrayersApiResponse, HijriYear"));
-                string hijriDay = details.SelectToken(getConfig("PrayersApiResponse, HijriDay"));
+                string hijriYear = details.SelectToken(GetConfig("PrayersApiResponse, HijriYear"));
+                string hijriDay = details.SelectToken(GetConfig("PrayersApiResponse, HijriDay"));
 
-                _prayers.Fajr = details.SelectToken(getConfig("PrayersApiResponse, Fajr"));
+                _prayers.Fajr = details.SelectToken(GetConfig("PrayersApiResponse, Fajr"));
                 //_prayers.Fajr = DateTime.Now.AddMinutes(2).ToString("hh:mm"); //use for docker container tests
-                _prayers.Dhuhr = details.SelectToken(getConfig("PrayersApiResponse, Dhuhr"));
-                _prayers.Asr = details.SelectToken(getConfig("PrayersApiResponse, Asr"));
-                _prayers.Maghrib = details.SelectToken(getConfig("PrayersApiResponse, Maghrib"));
-                _prayers.Isha = details.SelectToken(getConfig("PrayersApiResponse, Isha"));
+                _prayers.Dhuhr = details.SelectToken(GetConfig("PrayersApiResponse, Dhuhr"));
+                _prayers.Asr = details.SelectToken(GetConfig("PrayersApiResponse, Asr"));
+                _prayers.Maghrib = details.SelectToken(GetConfig("PrayersApiResponse, Maghrib"));
+                _prayers.Isha = details.SelectToken(GetConfig("PrayersApiResponse, Isha"));
                 _prayers.DateHijri = $"{hijriDay} {hijriMonth} {hijriYear}";
 
-                var datePath = getConfig("PrayersApiResponse, Date");
-                var dateFormat = getConfig("PrayersApiResponse, DateFormat");
+                var datePath = GetConfig("PrayersApiResponse, Date");
+                var dateFormat = GetConfig("PrayersApiResponse, DateFormat");
                 var date = details.SelectToken(datePath).ToString();
                 _prayers.Date = DateOnly.ParseExact(date, dateFormat);
 
-                Console.WriteLine($"***********************************");
-                Console.WriteLine($"*          {_prayers.Date}");
-                Console.WriteLine($"*       {_prayers.DateHijri}");
-                Console.WriteLine($"* Fajr:     {_prayers.Fajr}");
-                Console.WriteLine($"* Dhuhr:    {_prayers.Dhuhr}");
-                Console.WriteLine($"* Asr:      {_prayers.Asr}");
-                Console.WriteLine($"* Maghrib:  {_prayers.Maghrib}");
-                Console.WriteLine($"* Isha:     {_prayers.Isha}");
-                Console.WriteLine($"***********************************");
+                LogPrayerTimes();
 
                 _callPrayers.CallEndpoints();
             }
         }
 
-        private string getConfig(string path)
+        private void LogPrayerTimes()
+        {
+            Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", 35))}");
+            Console.WriteLine($"  {GetLog(_prayers.Date.ToString("dd MMMM yyyy"))}");
+            Console.WriteLine($"  {GetLog(_prayers.DateHijri)}");
+            Console.WriteLine($"  * Fajr:     {_prayers.Fajr}                 *");
+            Console.WriteLine($"  * Dhuhr:    {_prayers.Dhuhr}                 *");
+            Console.WriteLine($"  * Asr:      {_prayers.Asr}                 *");
+            Console.WriteLine($"  * Maghrib:  {_prayers.Maghrib}                 *");
+            Console.WriteLine($"  * Isha:     {_prayers.Isha}                 *");
+            Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", 35))}");
+        }
+
+        private string GetLog(string log)
+        {
+            int length = 33;
+            string finalLog = string.Empty;
+
+            int logLength = log.Length;
+            int leftGap = Convert.ToInt32(Math.Floor((length - logLength)/2m));
+            int rightGap = length - logLength - leftGap;
+
+            string left = String.Concat(Enumerable.Repeat(" ", leftGap));
+            string right = String.Concat(Enumerable.Repeat(" ", rightGap));
+
+
+            return $"*{left}{log}{right}*";
+        }
+
+        private string GetConfig(string path)
             => ConfigurationManager.GetConfigValue(path);
     }
 }
