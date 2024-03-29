@@ -51,6 +51,16 @@ namespace MyAdhan.Scheduler.Services
                 var date = details.SelectToken(datePath).ToString();
                 _prayers.Date = DateOnly.ParseExact(date, dateFormat);
 
+                Console.WriteLine($"***********************************");
+                Console.WriteLine($"*          {_prayers.Date}");
+                Console.WriteLine($"*       {_prayers.DateHijri}");
+                Console.WriteLine($"* Fajr:     {_prayers.Fajr}");
+                Console.WriteLine($"* Dhuhr:    {_prayers.Dhuhr}");
+                Console.WriteLine($"* Asr:      {_prayers.Asr}");
+                Console.WriteLine($"* Maghrib:  {_prayers.Maghrib}");
+                Console.WriteLine($"* Isha:     {_prayers.Isha}");
+                Console.WriteLine($"***********************************");
+
                 _callPrayers.CallEndpoints();
             }
         }
