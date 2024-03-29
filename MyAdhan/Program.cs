@@ -23,7 +23,9 @@ public class Program
         {
             scheduler.Schedule<GetAdhanTimings>()
             .EverySecond().Once();
-            //.DailyAt(0,1);
+
+            scheduler.Schedule<GetAdhanTimings>()
+            .DailyAt(1,5); //using 01:05 to avoid confusion on 1st day of summer time savings change
         });
 
         app.Run();
