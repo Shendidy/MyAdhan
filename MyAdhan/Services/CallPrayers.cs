@@ -33,7 +33,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToFajr);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Fajr...");
-                MakeCall(getConfig("VoiceMonkeyTriggers, Fajr"));
+                MakePrayerCall(getConfig("VoiceMonkeyTriggers, Fajr"));
             }
 
             // if now is <= Dhuhr
@@ -47,7 +47,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToDhuhr);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Dhuhr...");
-                MakeCall(getConfig("VoiceMonkeyTriggers, Dhuhr"));
+                MakePrayerCall(getConfig("VoiceMonkeyTriggers, Dhuhr"));
             }
 
             // if now is <= Asr
@@ -61,7 +61,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToAsr);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Asr...");
-                MakeCall(getConfig("VoiceMonkeyTriggers, Asr"));
+                MakePrayerCall(getConfig("VoiceMonkeyTriggers, Asr"));
             }
 
             // if now is <= Maghrib
@@ -75,7 +75,7 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToMaghrib);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Mahgrib...");
-                MakeCall(getConfig("VoiceMonkeyTriggers, Maghrib"));
+                MakePrayerCall(getConfig("VoiceMonkeyTriggers, Maghrib"));
             }
 
             // if now is <= Isha
@@ -89,22 +89,27 @@ namespace MyAdhan.Scheduler.Services
                     await Task.Delay(msToIsha);
                 }
                 _logger.LogInformation($"{DateTime.Now} Calling for Isha...");
-                MakeCall(getConfig("VoiceMonkeyTriggers, Isha"));
+                MakePrayerCall(getConfig("VoiceMonkeyTriggers, Isha"));
             }
 
             _logger.LogInformation($"Called all prayers for today...");
         }
 
-        private void MakeCall(string prayerUrl)
+        private void MakePrayerCall(string prayerUrl)
         {
-            using (var client = new HttpClient())
+            string[] calls = new string[] { getConfig("VoiceMonkeyTriggers, MuteTvs"), prayerUrl };
+
+            foreach (string call in calls)
             {
-                var url = new Uri(prayerUrl);
+                using (var client = new HttpClient())
+                {
+                    var url = new Uri(call);
 
-                var result = client.GetAsync(url).Result;
-                var json = result.Content.ReadAsStringAsync().Result;
+                    var result = client.GetAsync(url).Result;
+                    var json = result.Content.ReadAsStringAsync().Result;
 
-                _logger.LogInformation($"{json}");
+                    _logger.LogInformation(json);
+                }
             }
         }
 
