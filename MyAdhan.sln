@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAdhan.Scheduler", "MyAdhan\MyAdhan.Scheduler.csproj", "{2388D683-31FA-4D97-A837-272BDF054F93}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "training", "training\training.csproj", "{3E43A4CF-D26A-424E-9073-398D2860F161}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyAdhan.Scheduler", "MyAdhan\MyAdhan.Scheduler.csproj", "{2388D683-31FA-4D97-A837-272BDF054F93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		{2388D683-31FA-4D97-A837-272BDF054F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2388D683-31FA-4D97-A837-272BDF054F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2388D683-31FA-4D97-A837-272BDF054F93}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E43A4CF-D26A-424E-9073-398D2860F161}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E43A4CF-D26A-424E-9073-398D2860F161}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E43A4CF-D26A-424E-9073-398D2860F161}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E43A4CF-D26A-424E-9073-398D2860F161}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
