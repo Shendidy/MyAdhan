@@ -1,7 +1,9 @@
-﻿namespace MyAdhan.Scheduler.Services
+﻿using MyAdhan.Scheduler.Models;
+
+namespace MyAdhan.Scheduler.Services
 {
     public interface IUpdatePrayers
     {
-        void Update(string json);
+        void Update(string json, IPrayers prayers);
     }
 }

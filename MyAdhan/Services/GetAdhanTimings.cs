@@ -1,29 +1,33 @@
-﻿using Coravel.Invocable;
-using Microsoft.Extensions.Logging;
+﻿using MyAdhan.Scheduler.Models;
 
 namespace MyAdhan.Scheduler.Services
 {
-    public class GetAdhanTimings : IInvocable
+    public class GetAdhanTimings
     {
-        private readonly ILogger<GetAdhanTimings> _logger;
-        private IUpdatePrayers _updatePrayers;
+        private readonly IUpdatePrayers _updatePrayers;
+        public IPrayers _prayers;
 
-        public GetAdhanTimings(ILogger<GetAdhanTimings> logger, IUpdatePrayers updatePrayers)
+        public GetAdhanTimings() : this(
+            new UpdatePrayers(),
+            new Prayers()) { }
+
+        public GetAdhanTimings( IUpdatePrayers updatePrayers,
+                                IPrayers prayers)
         {
-            _logger = logger;
             _updatePrayers = updatePrayers;
+            _prayers = prayers;
         }
 
-        public Task Invoke()
+        public void GetTimings()
         {
-            _logger.LogInformation($"{DateTime.Now} - Getting new prayer times.");
+            Console.WriteLine($"{DateTime.Now} - Getting new prayer times.");
 
-            var baseUri = getConfig("PrayersApi, BaseUri");
-            var endpoint = getConfig("PrayersApi, Endpoint");
+            var baseUri = GetConfig("PrayersApi, BaseUri");
+            var endpoint = GetConfig("PrayersApi, Endpoint");
             var dateToGet = DateTime.Now.ToString("dd-MM-yyyy");
-            var paramAddress = getConfig("PrayersApi, ParamAddress");
-            var paramMethod = getConfig("PrayersApi, ParamMethod");
-            var paramTune = getConfig("PrayersApi, ParamTune");
+            var paramAddress = GetConfig("PrayersApi, ParamAddress");
+            var paramMethod = GetConfig("PrayersApi, ParamMethod");
+            var paramTune = GetConfig("PrayersApi, ParamTune");
 
             using (var client = new HttpClient())
             {
@@ -32,13 +36,11 @@ namespace MyAdhan.Scheduler.Services
                 var result = client.GetAsync(url).Result;
                 var json = result.Content.ReadAsStringAsync().Result;
 
-                _updatePrayers.Update(json);
+                _updatePrayers.Update(json, _prayers);
             }
-
-            return Task.FromResult(true);
         }
 
-        private string getConfig(string path)
+        private static string GetConfig(string path)
             => ConfigurationManager.GetConfigValue(path);
     }
 }

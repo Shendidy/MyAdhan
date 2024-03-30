@@ -7,29 +7,25 @@ namespace MyAdhan.Scheduler.Services
 {
     public class UpdatePrayers : IUpdatePrayers
     {
-        private readonly ILogger<UpdatePrayers>? _logger;
-        public IPrayers _prayers;
         public ICallPrayers _callPrayers;
-        public UpdatePrayers(ILogger<UpdatePrayers> logger
-            , IPrayers prayers
-            , ICallPrayers callPrayers)
+
+        private readonly bool _isTesting = GetConfig("Testing") == "true";
+
+        public UpdatePrayers() : this(new CallPrayers()){}
+        public UpdatePrayers(ICallPrayers callPrayers)
         {
-            _logger = logger;
-            _prayers = prayers;
             _callPrayers = callPrayers;
         }
 
-        public void Update(string json)
+        public void Update(string json, IPrayers prayers)
         {
-            if (_prayers == null)
+            if (prayers == null)
             {
-                _logger.LogError($"No prayers object is created yet!");
+                Console.WriteLine($"No prayers object is created yet!");
             }
             else
             {
-                //Use these values for testing
-                //string jsonFilePath = @".\JsonFiles\AdhanAPIResponse.json";
-                //json = File.ReadAllText(jsonFilePath);
+                Console.WriteLine($"Updating prayers timings...");
 
                 dynamic details = JsonConvert.DeserializeObject<dynamic>(json);
 
@@ -38,35 +34,47 @@ namespace MyAdhan.Scheduler.Services
                 string hijriYear = details.SelectToken(GetConfig("PrayersApiResponse, HijriYear"));
                 string hijriDay = details.SelectToken(GetConfig("PrayersApiResponse, HijriDay"));
 
-                _prayers.Fajr = details.SelectToken(GetConfig("PrayersApiResponse, Fajr"));
-                //_prayers.Fajr = DateTime.Now.AddMinutes(2).ToString("hh:mm"); //use for docker container tests
-                _prayers.Dhuhr = details.SelectToken(GetConfig("PrayersApiResponse, Dhuhr"));
-                _prayers.Asr = details.SelectToken(GetConfig("PrayersApiResponse, Asr"));
-                _prayers.Maghrib = details.SelectToken(GetConfig("PrayersApiResponse, Maghrib"));
-                _prayers.Isha = details.SelectToken(GetConfig("PrayersApiResponse, Isha"));
-                _prayers.DateHijri = $"{hijriDay} {hijriMonth} {hijriYear}";
+                prayers.DateHijri = $"{hijriDay} {hijriMonth} {hijriYear}";
+
+                if (_isTesting)
+                {
+                    prayers.Fajr = DateTime.Now.AddSeconds(5).ToString("HH:mm:ss");
+                    prayers.Dhuhr = DateTime.Now.AddSeconds(10).ToString("HH:mm:ss");
+                    prayers.Asr = DateTime.Now.AddSeconds(15).ToString("HH:mm:ss");
+                    prayers.Maghrib = DateTime.Now.AddSeconds(20).ToString("HH:mm:ss");
+                    prayers.Isha = DateTime.Now.AddSeconds(25).ToString("HH:mm:ss");
+                }
+                else
+                {
+                    prayers.Fajr = details.SelectToken(GetConfig("PrayersApiResponse, Fajr"));
+                    prayers.Dhuhr = details.SelectToken(GetConfig("PrayersApiResponse, Dhuhr"));
+                    prayers.Asr = details.SelectToken(GetConfig("PrayersApiResponse, Asr"));
+                    prayers.Maghrib = details.SelectToken(GetConfig("PrayersApiResponse, Maghrib"));
+                    prayers.Isha = details.SelectToken(GetConfig("PrayersApiResponse, Isha"));
+                }
 
                 var datePath = GetConfig("PrayersApiResponse, Date");
                 var dateFormat = GetConfig("PrayersApiResponse, DateFormat");
                 var date = details.SelectToken(datePath).ToString();
-                _prayers.Date = DateOnly.ParseExact(date, dateFormat);
+                prayers.Date = DateOnly.ParseExact(date, dateFormat);
 
-                LogPrayerTimes();
+                LogPrayerTimes(prayers);
 
-                _callPrayers.CallEndpoints();
+                _callPrayers.CallEndpoints(prayers);
             }
         }
 
-        private void LogPrayerTimes()
+        private void LogPrayerTimes(IPrayers prayers)
         {
+            if (_isTesting) Console.WriteLine($"Test values...");
             Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", 35))}");
-            Console.WriteLine($"  {GetLog(_prayers.Date.ToString("dd MMMM yyyy"))}");
-            Console.WriteLine($"  {GetLog(_prayers.DateHijri)}");
-            Console.WriteLine($"  * Fajr:     {_prayers.Fajr}                 *");
-            Console.WriteLine($"  * Dhuhr:    {_prayers.Dhuhr}                 *");
-            Console.WriteLine($"  * Asr:      {_prayers.Asr}                 *");
-            Console.WriteLine($"  * Maghrib:  {_prayers.Maghrib}                 *");
-            Console.WriteLine($"  * Isha:     {_prayers.Isha}                 *");
+            Console.WriteLine($"  {GetLog(prayers.Date.ToString("dd MMMM yyyy"))}");
+            Console.WriteLine($"  {GetLog(prayers.DateHijri)}");
+            Console.WriteLine($"  * Fajr:     {prayers.Fajr}                 *");
+            Console.WriteLine($"  * Dhuhr:    {prayers.Dhuhr}                 *");
+            Console.WriteLine($"  * Asr:      {prayers.Asr}                 *");
+            Console.WriteLine($"  * Maghrib:  {prayers.Maghrib}                 *");
+            Console.WriteLine($"  * Isha:     {prayers.Isha}                 *");
             Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", 35))}");
         }
 
@@ -86,7 +94,7 @@ namespace MyAdhan.Scheduler.Services
             return $"*{left}{log}{right}*";
         }
 
-        private string GetConfig(string path)
+        private static string GetConfig(string path)
             => ConfigurationManager.GetConfigValue(path);
     }
 }

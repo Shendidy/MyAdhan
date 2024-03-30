@@ -4,16 +4,16 @@ namespace MyAdhan.Scheduler
 {
     public static class ConfigurationManager
     {
-        public static string GetConfigValue(string keys)
+        public static string GetConfigValue(string target)
         {
-            if (string.IsNullOrEmpty(keys)) return "";
+            if (string.IsNullOrEmpty(target)) return "";
 
             IConfiguration configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
             .AddJsonFile("appsettings.json")
             .Build();
 
-            string[] keysArray = keys.Split(',');
+            string[] keysArray = target.Split(',');
 
             var section = configuration.GetSection(keysArray[0]);
 
