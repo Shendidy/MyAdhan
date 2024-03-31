@@ -1,20 +1,25 @@
-﻿using Microsoft.Extensions.Logging;
-using MyAdhan.Scheduler.Enums;
+﻿using MyAdhan.Scheduler.Enums;
 using MyAdhan.Scheduler.Models;
+using MyAdhan.Scheduler.Repositories;
+
 using Newtonsoft.Json;
 
 namespace MyAdhan.Scheduler.Services
 {
     public class UpdatePrayers : IUpdatePrayers
     {
+        private readonly IMyDate _myDate;
         public ICallPrayers _callPrayers;
 
         private readonly bool _isTesting = GetConfig("Testing") == "true";
 
-        public UpdatePrayers() : this(new CallPrayers()){}
-        public UpdatePrayers(ICallPrayers callPrayers)
+        public UpdatePrayers() : this(
+            new CallPrayers(),
+            new MyDate()){}
+        public UpdatePrayers(ICallPrayers callPrayers, IMyDate myDate)
         {
             _callPrayers = callPrayers;
+            _myDate = myDate;
         }
 
         public void Update(string json, IPrayers prayers)
@@ -38,11 +43,11 @@ namespace MyAdhan.Scheduler.Services
 
                 if (_isTesting)
                 {
-                    prayers.Fajr = DateTime.Now.AddSeconds(5).ToString("HH:mm:ss");
-                    prayers.Dhuhr = DateTime.Now.AddSeconds(10).ToString("HH:mm:ss");
-                    prayers.Asr = DateTime.Now.AddSeconds(15).ToString("HH:mm:ss");
-                    prayers.Maghrib = DateTime.Now.AddSeconds(20).ToString("HH:mm:ss");
-                    prayers.Isha = DateTime.Now.AddSeconds(25).ToString("HH:mm:ss");
+                    prayers.Fajr = _myDate.GetNow().AddSeconds(5).ToString("HH:mm:ss");
+                    prayers.Dhuhr = _myDate.GetNow().AddSeconds(10).ToString("HH:mm:ss");
+                    prayers.Asr = _myDate.GetNow().AddSeconds(15).ToString("HH:mm:ss");
+                    prayers.Maghrib = _myDate.GetNow().AddSeconds(20).ToString("HH:mm:ss");
+                    prayers.Isha = _myDate.GetNow().AddSeconds(25).ToString("HH:mm:ss");
                 }
                 else
                 {
@@ -81,7 +86,6 @@ namespace MyAdhan.Scheduler.Services
         private string GetLog(string log)
         {
             int length = 33;
-            string finalLog = string.Empty;
 
             int logLength = log.Length;
             int leftGap = Convert.ToInt32(Math.Floor((length - logLength)/2m));

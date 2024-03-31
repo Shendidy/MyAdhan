@@ -1,4 +1,5 @@
 ﻿using MyAdhan.Scheduler.Models;
+using MyAdhan.Scheduler.Repositories;
 
 namespace MyAdhan.Scheduler.Services
 {

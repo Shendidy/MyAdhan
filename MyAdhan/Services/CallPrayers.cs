@@ -1,14 +1,25 @@
 ﻿using MyAdhan.Scheduler.Models;
+using MyAdhan.Scheduler.Repositories;
+
+using System;
 
 namespace MyAdhan.Scheduler.Services
 {
     public class CallPrayers : ICallPrayers
     {
         private readonly bool _isTesting = GetConfig("Testing") == "true";
+        private readonly IMyDate _myDate;
+
+        public CallPrayers() : this(new MyDate()) { }
+
+        public CallPrayers(IMyDate myDate)
+        {
+            _myDate = myDate;
+        }
 
         public void CallEndpoints(IPrayers prayers)
         {
-            var today = DateOnly.FromDateTime(DateTime.Today);
+            var today = _myDate.GetToday();
             var fajr = today.ToDateTime(TimeOnly.Parse(prayers.Fajr));
             var dhuhr = today.ToDateTime(TimeOnly.Parse(prayers.Dhuhr));
             var asr = today.ToDateTime(TimeOnly.Parse(prayers.Asr));
@@ -16,86 +27,93 @@ namespace MyAdhan.Scheduler.Services
             var isha = today.ToDateTime(TimeOnly.Parse(prayers.Isha));
 
             // if now is <= Fajr
-            if (DateTime.Now <= fajr)
+            if (_myDate.GetNow() <= fajr)
             {
-                var msToFajr = Convert.ToInt32((fajr - DateTime.Now).TotalMilliseconds);
+                var msToFajr = Convert.ToInt32((fajr - _myDate.GetNow()).TotalMilliseconds);
 
                 if (msToFajr > 1000)
                 {
-                    Console.WriteLine($"Waiting for Fajr in {TimeSpan.FromMilliseconds(msToFajr)}");
-                    Thread.Sleep(msToFajr);
+                    while (_myDate.GetNow() < fajr)
+                    {
+                        Console.Write($"\r Waiting for Fajr in {GetTimeLeft(fajr)}");
+                    }
                 }
-                Console.WriteLine($"{DateTime.Now} Calling for Fajr...");
+                Console.WriteLine($"{_myDate.GetNow()} Calling for Fajr...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Fajr"));
             }
 
             // if now is <= Dhuhr
-            if (DateTime.Now <= dhuhr)
+            if (_myDate.GetNow() <= dhuhr)
             {
-                var msToDhuhr = Convert.ToInt32((dhuhr - DateTime.Now).TotalMilliseconds);
+                var msToDhuhr = Convert.ToInt32((dhuhr - _myDate.GetNow()).TotalMilliseconds);
 
                 if (msToDhuhr > 1000)
                 {
-                    Console.WriteLine($"Waiting for Dhuhr in {TimeSpan.FromMilliseconds(msToDhuhr)}");
-                    Thread.Sleep(msToDhuhr);
+                    while (_myDate.GetNow() < dhuhr)
+                    {
+                        Console.Write($"\r Waiting for Dhuhr in {GetTimeLeft(dhuhr)}");
+                    }
                 }
-                Console.WriteLine($"{DateTime.Now} Calling for Dhuhr...");
+                Console.WriteLine($"{_myDate.GetNow()} Calling for Dhuhr...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Dhuhr"));
             }
 
             // if now is <= Asr
-            if (DateTime.Now <= asr)
+            if (_myDate.GetNow() <= asr)
             {
-                var msToAsr = Convert.ToInt32((asr - DateTime.Now).TotalMilliseconds);
+                var msToAsr = Convert.ToInt32((asr - _myDate.GetNow()).TotalMilliseconds);
 
                 if (msToAsr > 1000)
                 {
-                    Console.WriteLine($"Waiting for Asr in {TimeSpan.FromMilliseconds(msToAsr)}");
-                    Thread.Sleep(msToAsr);
+                    while (_myDate.GetNow() < asr)
+                    {
+                        Console.Write($"\r Waiting for Asr in {GetTimeLeft(asr)}");
+                    }
                 }
-                Console.WriteLine($"{DateTime.Now} Calling for Asr...");
+                Console.WriteLine($"{_myDate.GetNow()} Calling for Asr...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Asr"));
             }
 
             // if now is <= Maghrib
-            if (DateTime.Now <= maghrib)
+            if (_myDate.GetNow() <= maghrib)
             {
-                var msToMaghrib = Convert.ToInt32((maghrib - DateTime.Now).TotalMilliseconds);
+                var msToMaghrib = Convert.ToInt32((maghrib - _myDate.GetNow()).TotalMilliseconds);
 
                 if (msToMaghrib > 1000)
                 {
-                    Console.WriteLine($"Waiting for Maghrib in {TimeSpan.FromMilliseconds(msToMaghrib)}");
-                    Thread.Sleep(msToMaghrib);
+                    while (_myDate.GetNow() < maghrib)
+                    {
+                        Console.Write($"\r Waiting for Maghrib in {GetTimeLeft(maghrib)}");
+                    }
                 }
-                Console.WriteLine($"{DateTime.Now} Calling for Mahgrib...");
+                Console.WriteLine($"{_myDate.GetNow()} Calling for Mahgrib...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Maghrib"));
             }
 
             // if now is <= Isha
-            if (DateTime.Now <= isha)
+            if (_myDate.GetNow() <= isha)
             {
-                var msToIsha = Convert.ToInt32((isha - DateTime.Now).TotalMilliseconds);
+                var msToIsha = Convert.ToInt32((isha - _myDate.GetNow()).TotalMilliseconds);
 
                 if (msToIsha > 1000)
                 {
-                    Console.WriteLine($"Waiting for Isha in {TimeSpan.FromMilliseconds(msToIsha)}");
-                    Thread.Sleep(msToIsha);
+                    while (_myDate.GetNow() < isha)
+                    {
+                        Console.Write($"\r Waiting for Isha in {GetTimeLeft(isha)}");
+                    }
                 }
-                Console.WriteLine($"{DateTime.Now} Calling for Isha...");
+                Console.WriteLine($"{_myDate.GetNow()} Calling for Isha...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Isha"));
             }
 
             Console.WriteLine($"Called all prayers for today...");
-            var timeTillGettingNewTimings =
-                Convert.ToInt32((today.ToDateTime(TimeOnly.Parse("1:05 AM")).AddDays(1)
-                - DateTime.Now).TotalMilliseconds);
 
-            int hours = timeTillGettingNewTimings / 1000 / 60 / 60;
-            int minutes = (timeTillGettingNewTimings - (hours * 60 * 60 * 1000)) / 1000 / 60;
-            int seconds = (timeTillGettingNewTimings - (hours * 60 * 60 * 1000) - (minutes * 60 * 1000)) / 1000;
+            DateTime timeForGetNewTimings = today.ToDateTime(TimeOnly.Parse("1:05 AM")).AddDays(1);
 
-            Console.WriteLine($"{DateTime.Now} - Will get tomorrow's prayer times in: \n\t {hours} hours and {minutes} minutes, and {seconds} seconds.");
-            Thread.Sleep(timeTillGettingNewTimings);
+            while (_myDate.GetNow() < timeForGetNewTimings)
+            {
+                Console.Write($"\rWill get tomorrow's prayers times in: {GetTimeLeft(_myDate.GetNow(), timeForGetNewTimings)}");
+            }
             new GetAdhanTimings().GetTimings();
         }
 
@@ -126,5 +144,17 @@ namespace MyAdhan.Scheduler.Services
 
         private static string GetConfig(string path)
             => ConfigurationManager.GetConfigValue(path);
+
+        private TimeSpan GetTimeLeft(DateTime time)
+        {
+            var timeLeft = time - _myDate.GetNow();
+            return new TimeSpan(timeLeft.Hours, timeLeft.Minutes, timeLeft.Seconds);
+        }
+
+        private TimeSpan GetTimeLeft(DateTime startTime, DateTime endTime)
+        {
+            var timeLeft = endTime - startTime;
+            return new TimeSpan(timeLeft.Hours, timeLeft.Minutes, timeLeft.Seconds);
+        }
     }
 }

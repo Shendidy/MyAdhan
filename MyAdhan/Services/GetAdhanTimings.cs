@@ -1,30 +1,35 @@
 ﻿using MyAdhan.Scheduler.Models;
+using MyAdhan.Scheduler.Repositories;
 
 namespace MyAdhan.Scheduler.Services
 {
     public class GetAdhanTimings
     {
         private readonly IUpdatePrayers _updatePrayers;
+        private readonly IMyDate _myDate;
         public IPrayers _prayers;
 
         public GetAdhanTimings() : this(
             new UpdatePrayers(),
-            new Prayers()) { }
+            new Prayers(),
+            new MyDate()) { }
 
         public GetAdhanTimings( IUpdatePrayers updatePrayers,
-                                IPrayers prayers)
+                                IPrayers prayers,
+                                IMyDate myDate)
         {
             _updatePrayers = updatePrayers;
             _prayers = prayers;
+            _myDate = myDate;
         }
 
         public void GetTimings()
         {
-            Console.WriteLine($"{DateTime.Now} - Getting new prayer times.");
+            Console.WriteLine($"{_myDate.GetNow()} - Getting new prayer times.");
 
             var baseUri = GetConfig("PrayersApi, BaseUri");
             var endpoint = GetConfig("PrayersApi, Endpoint");
-            var dateToGet = DateTime.Now.ToString("dd-MM-yyyy");
+            var dateToGet = _myDate.GetNow().ToString("dd-MM-yyyy");
             var paramAddress = GetConfig("PrayersApi, ParamAddress");
             var paramMethod = GetConfig("PrayersApi, ParamMethod");
             var paramTune = GetConfig("PrayersApi, ParamTune");

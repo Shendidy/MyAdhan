@@ -4,11 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using MyAdhan.Scheduler.Models;
 using MyAdhan.Scheduler.Services;
+using MyAdhan.Scheduler.Repositories;
 
 public class Program
 {
     private static void Main(string[] args)
     {
+        //Console.WriteLine(TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/London"));
+        //Console.WriteLine(DateTime.Now);
+
         var host = AppStartup();
 
         var service = ActivatorUtilities.CreateInstance<GetAdhanTimings>(host.Services);
@@ -38,6 +42,7 @@ public class Program
                 services.AddTransient<IPrayers, Prayers>();
                 services.AddTransient<IUpdatePrayers, UpdatePrayers>();
                 services.AddTransient<ICallPrayers, CallPrayers>();
+                services.AddTransient<IMyDate, MyDate>();
             })
             .UseSerilog()
             .Build();
