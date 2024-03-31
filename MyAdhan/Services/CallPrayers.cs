@@ -1,8 +1,6 @@
 ﻿using MyAdhan.Scheduler.Models;
 using MyAdhan.Scheduler.Repositories;
 
-using System;
-
 namespace MyAdhan.Scheduler.Services
 {
     public class CallPrayers : ICallPrayers
@@ -37,7 +35,7 @@ namespace MyAdhan.Scheduler.Services
                     while (_myDate.GetNow() < fajr) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Fajr...");
-                MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Fajr"));
+                MakePrayerCall("VoiceMonkeyTriggers, Fajr");
             }
 
             // if now is <= Dhuhr
@@ -51,7 +49,7 @@ namespace MyAdhan.Scheduler.Services
                     while (_myDate.GetNow() < dhuhr) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Dhuhr...");
-                MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Dhuhr"));
+                MakePrayerCall("VoiceMonkeyTriggers, Dhuhr");
             }
 
             // if now is <= Asr
@@ -65,7 +63,7 @@ namespace MyAdhan.Scheduler.Services
                     while (_myDate.GetNow() < asr) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Asr...");
-                MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Asr"));
+                MakePrayerCall("VoiceMonkeyTriggers, Asr");
             }
 
             // if now is <= Maghrib
@@ -79,7 +77,7 @@ namespace MyAdhan.Scheduler.Services
                     while (_myDate.GetNow() < maghrib) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Mahgrib...");
-                MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Maghrib"));
+                MakePrayerCall("VoiceMonkeyTriggers, Maghrib");
             }
 
             // if now is <= Isha
@@ -93,15 +91,16 @@ namespace MyAdhan.Scheduler.Services
                     while (_myDate.GetNow() < isha) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Isha...");
-                MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Isha"));
+                MakePrayerCall("VoiceMonkeyTriggers, Isha");
             }
 
             Console.WriteLine($"Called all prayers for today...");
 
             DateTime timeForGetNewTimings = today.ToDateTime(TimeOnly.Parse("1:05 AM")).AddDays(1);
 
-            Console.WriteLine($"Will get tomorrow's prayers times in: {GetTimeLeft(_myDate.GetNow(), timeForGetNewTimings)}");
-            while (_myDate.GetNow() < timeForGetNewTimings) { }
+            var waitingDuration = _isTesting ? 10000 : Convert.ToInt32(GetTimeLeft(_myDate.GetNow(), timeForGetNewTimings));
+            Console.WriteLine($"Will get tomorrow's prayers times in: {TimeSpan.FromMilliseconds(waitingDuration)}");
+            Thread.Sleep(waitingDuration);
 
             new GetAdhanTimings().GetTimings();
         }
@@ -110,22 +109,25 @@ namespace MyAdhan.Scheduler.Services
         {
             string muteTvUrl = string.Empty;
 
-            if (_isTesting) prayerUrl = GetConfig("VoiceMonkeyTriggers, Hi");
-            else muteTvUrl = GetConfig("VoiceMonkeyTriggers, MuteTvs");
+            if (_isTesting) prayerUrl = "VoiceMonkeyTriggers, Hi";
+            else muteTvUrl = "VoiceMonkeyTriggers, MuteTvs";
+
             string[] calls = new string[] { muteTvUrl, prayerUrl };
 
             foreach (string call in calls)
             {
                 using (var client = new HttpClient())
                 {
-                    if (!string.IsNullOrEmpty(call))
-                    {
-                        var url = new Uri(call);
+                    var url = GetConfig(call);
 
-                        var result = client.GetAsync(url).Result;
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        var uri = new Uri(url);
+
+                        var result = client.GetAsync(uri).Result;
                         var json = result.Content.ReadAsStringAsync().Result;
 
-                        Console.WriteLine(json);
+                        Console.WriteLine($"Calling {call.Split(',').Last().Trim()} returned: {json}");
                     }
                 }
             }
