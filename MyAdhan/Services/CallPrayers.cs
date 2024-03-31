@@ -32,7 +32,7 @@ namespace MyAdhan.Scheduler.Services
                 if (msToFajr > 1000)
                 {
                     Console.WriteLine($"Waiting for Fajr in {GetTimeLeft(fajr)}");
-                    while (_myDate.GetNow() < fajr) { }
+                    Thread.Sleep(msToFajr);
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Fajr...");
                 MakePrayerCall("VoiceMonkeyTriggers, Fajr");
@@ -46,7 +46,7 @@ namespace MyAdhan.Scheduler.Services
                 if (msToDhuhr > 1000)
                 {
                     Console.WriteLine($"Waiting for Dhuhr in {GetTimeLeft(dhuhr)}");
-                    while (_myDate.GetNow() < dhuhr) { }
+                    Thread.Sleep(msToDhuhr);
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Dhuhr...");
                 MakePrayerCall("VoiceMonkeyTriggers, Dhuhr");
@@ -60,7 +60,7 @@ namespace MyAdhan.Scheduler.Services
                 if (msToAsr > 1000)
                 {
                     Console.WriteLine($"Waiting for Asr in {GetTimeLeft(asr)}");
-                    while (_myDate.GetNow() < asr) { }
+                    Thread.Sleep(msToAsr);
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Asr...");
                 MakePrayerCall("VoiceMonkeyTriggers, Asr");
@@ -74,7 +74,7 @@ namespace MyAdhan.Scheduler.Services
                 if (msToMaghrib > 1000)
                 {
                     Console.WriteLine($"Waiting for Maghrib in {GetTimeLeft(maghrib)}");
-                    while (_myDate.GetNow() < maghrib) { }
+                    Thread.Sleep(msToMaghrib);
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Mahgrib...");
                 MakePrayerCall("VoiceMonkeyTriggers, Maghrib");
@@ -88,7 +88,7 @@ namespace MyAdhan.Scheduler.Services
                 if (msToIsha > 1000)
                 {
                     Console.WriteLine($"Waiting for Isha in {GetTimeLeft(isha)}");
-                    while (_myDate.GetNow() < isha) { }
+                    Thread.Sleep(msToIsha);
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Isha...");
                 MakePrayerCall("VoiceMonkeyTriggers, Isha");
