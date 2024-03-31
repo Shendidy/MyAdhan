@@ -33,10 +33,8 @@ namespace MyAdhan.Scheduler.Services
 
                 if (msToFajr > 1000)
                 {
-                    while (_myDate.GetNow() < fajr)
-                    {
-                        Console.Write($"\r Waiting for Fajr in {GetTimeLeft(fajr)}");
-                    }
+                    Console.WriteLine($"Waiting for Fajr in {GetTimeLeft(fajr)}");
+                    while (_myDate.GetNow() < fajr) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Fajr...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Fajr"));
@@ -49,10 +47,8 @@ namespace MyAdhan.Scheduler.Services
 
                 if (msToDhuhr > 1000)
                 {
-                    while (_myDate.GetNow() < dhuhr)
-                    {
-                        Console.Write($"\r Waiting for Dhuhr in {GetTimeLeft(dhuhr)}");
-                    }
+                    Console.WriteLine($"Waiting for Dhuhr in {GetTimeLeft(dhuhr)}");
+                    while (_myDate.GetNow() < dhuhr) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Dhuhr...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Dhuhr"));
@@ -65,10 +61,8 @@ namespace MyAdhan.Scheduler.Services
 
                 if (msToAsr > 1000)
                 {
-                    while (_myDate.GetNow() < asr)
-                    {
-                        Console.Write($"\r Waiting for Asr in {GetTimeLeft(asr)}");
-                    }
+                    Console.WriteLine($"Waiting for Asr in {GetTimeLeft(asr)}");
+                    while (_myDate.GetNow() < asr) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Asr...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Asr"));
@@ -81,10 +75,8 @@ namespace MyAdhan.Scheduler.Services
 
                 if (msToMaghrib > 1000)
                 {
-                    while (_myDate.GetNow() < maghrib)
-                    {
-                        Console.Write($"\r Waiting for Maghrib in {GetTimeLeft(maghrib)}");
-                    }
+                    Console.WriteLine($"Waiting for Maghrib in {GetTimeLeft(maghrib)}");
+                    while (_myDate.GetNow() < maghrib) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Mahgrib...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Maghrib"));
@@ -97,10 +89,8 @@ namespace MyAdhan.Scheduler.Services
 
                 if (msToIsha > 1000)
                 {
-                    while (_myDate.GetNow() < isha)
-                    {
-                        Console.Write($"\r Waiting for Isha in {GetTimeLeft(isha)}");
-                    }
+                    Console.WriteLine($"Waiting for Isha in {GetTimeLeft(isha)}");
+                    while (_myDate.GetNow() < isha) { }
                 }
                 Console.WriteLine($"{_myDate.GetNow()} Calling for Isha...");
                 MakePrayerCall(GetConfig("VoiceMonkeyTriggers, Isha"));
@@ -110,10 +100,9 @@ namespace MyAdhan.Scheduler.Services
 
             DateTime timeForGetNewTimings = today.ToDateTime(TimeOnly.Parse("1:05 AM")).AddDays(1);
 
-            while (_myDate.GetNow() < timeForGetNewTimings)
-            {
-                Console.Write($"\rWill get tomorrow's prayers times in: {GetTimeLeft(_myDate.GetNow(), timeForGetNewTimings)}");
-            }
+            Console.WriteLine($"Will get tomorrow's prayers times in: {GetTimeLeft(_myDate.GetNow(), timeForGetNewTimings)}");
+            while (_myDate.GetNow() < timeForGetNewTimings) { }
+
             new GetAdhanTimings().GetTimings();
         }
 
