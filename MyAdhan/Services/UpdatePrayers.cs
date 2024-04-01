@@ -43,18 +43,22 @@ namespace MyAdhan.Scheduler.Services
 
                 if (_isTesting)
                 {
-                    prayers.Fajr = _myDate.GetNow().AddSeconds(5).ToString("HH:mm:ss");
-                    prayers.Dhuhr = _myDate.GetNow().AddSeconds(10).ToString("HH:mm:ss");
-                    prayers.Asr = _myDate.GetNow().AddSeconds(15).ToString("HH:mm:ss");
-                    prayers.Maghrib = _myDate.GetNow().AddSeconds(20).ToString("HH:mm:ss");
-                    prayers.Isha = _myDate.GetNow().AddSeconds(25).ToString("HH:mm:ss");
+                    prayers.Imsak = _myDate.GetNow().AddSeconds(5).ToString("HH:mm:ss");
+                    prayers.Fajr = _myDate.GetNow().AddSeconds(10).ToString("HH:mm:ss");
+                    prayers.Dhuhr = _myDate.GetNow().AddSeconds(15).ToString("HH:mm:ss");
+                    prayers.Asr = _myDate.GetNow().AddSeconds(20).ToString("HH:mm:ss");
+                    prayers.RamadanQuran = _myDate.GetNow().AddSeconds(25).ToString("HH:mm:ss");
+                    prayers.Maghrib = _myDate.GetNow().AddSeconds(30).ToString("HH:mm:ss");
+                    prayers.Isha = _myDate.GetNow().AddSeconds(35).ToString("HH:mm:ss");
                 }
                 else
                 {
                     prayers.Fajr = details.SelectToken(GetConfig("PrayersApiResponse, Fajr"));
+                    prayers.Imsak = TimeOnly.FromTimeSpan(TimeSpan.Parse(prayers.Fajr)).AddMinutes(-10).ToString();
                     prayers.Dhuhr = details.SelectToken(GetConfig("PrayersApiResponse, Dhuhr"));
                     prayers.Asr = details.SelectToken(GetConfig("PrayersApiResponse, Asr"));
                     prayers.Maghrib = details.SelectToken(GetConfig("PrayersApiResponse, Maghrib"));
+                    prayers.RamadanQuran = TimeOnly.FromTimeSpan(TimeSpan.Parse(prayers.Maghrib)).AddMinutes(-10).ToString();
                     prayers.Isha = details.SelectToken(GetConfig("PrayersApiResponse, Isha"));
                 }
 
@@ -71,25 +75,26 @@ namespace MyAdhan.Scheduler.Services
 
         private void LogPrayerTimes(IPrayers prayers)
         {
+            int width = 29;
             if (_isTesting) Console.WriteLine($"Test values...");
-            Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", 35))}");
-            Console.WriteLine($"  {GetLog(prayers.Date.ToString("dd MMMM yyyy"))}");
-            Console.WriteLine($"  {GetLog(prayers.DateHijri)}");
-            Console.WriteLine($"  * Fajr:     {prayers.Fajr}                 *");
-            Console.WriteLine($"  * Dhuhr:    {prayers.Dhuhr}                 *");
-            Console.WriteLine($"  * Asr:      {prayers.Asr}                 *");
-            Console.WriteLine($"  * Maghrib:  {prayers.Maghrib}                 *");
-            Console.WriteLine($"  * Isha:     {prayers.Isha}                 *");
-            Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", 35))}");
+            Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", width))}");
+            Console.WriteLine($"  {GetLog(prayers.Date.DayOfWeek.ToString(), width-2)}");
+            Console.WriteLine($"  {GetLog(prayers.Date.ToString("dd MMMM yyyy"), width-2)}");
+            Console.WriteLine($"  {GetLog(prayers.DateHijri, width-2)}");
+            Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", width))}");
+            Console.WriteLine($"  * Fajr:     {prayers.Fajr}           *");
+            Console.WriteLine($"  * Dhuhr:    {prayers.Dhuhr}           *");
+            Console.WriteLine($"  * Asr:      {prayers.Asr}           *");
+            Console.WriteLine($"  * Maghrib:  {prayers.Maghrib}           *");
+            Console.WriteLine($"  * Isha:     {prayers.Isha}           *");
+            Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", width))}");
         }
 
-        private string GetLog(string log)
+        private string GetLog(string log, int width)
         {
-            int length = 33;
-
             int logLength = log.Length;
-            int leftGap = Convert.ToInt32(Math.Floor((length - logLength)/2m));
-            int rightGap = length - logLength - leftGap;
+            int leftGap = Convert.ToInt32(Math.Floor((width - logLength)/2m));
+            int rightGap = width - logLength - leftGap;
 
             string left = String.Concat(Enumerable.Repeat(" ", leftGap));
             string right = String.Concat(Enumerable.Repeat(" ", rightGap));

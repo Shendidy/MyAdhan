@@ -10,9 +10,6 @@ public class Program
 {
     private static void Main(string[] args)
     {
-        //Console.WriteLine(TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/London"));
-        //Console.WriteLine(DateTime.Now);
-
         var host = AppStartup();
 
         var service = ActivatorUtilities.CreateInstance<GetAdhanTimings>(host.Services);
