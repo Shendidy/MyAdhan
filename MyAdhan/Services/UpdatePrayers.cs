@@ -77,7 +77,9 @@ namespace MyAdhan.Scheduler.Services
         {
             int width = 29;
             if (_isTesting) Console.WriteLine($"Test values...");
+
             Console.WriteLine($"  {String.Concat(Enumerable.Repeat("*", width))}");
+            Console.WriteLine($"  {GetLog(GetConfig("PrayersApi, ParamAddress").Replace(",", ", "), width - 2)}");
             Console.WriteLine($"  {GetLog(prayers.Date.DayOfWeek.ToString(), width-2)}");
             Console.WriteLine($"  {GetLog(prayers.Date.ToString("dd MMMM yyyy"), width-2)}");
             Console.WriteLine($"  {GetLog(prayers.DateHijri, width-2)}");

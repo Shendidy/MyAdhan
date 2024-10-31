@@ -25,14 +25,14 @@ namespace MyAdhan.Scheduler.Services
 
         public void GetTimings()
         {
-            Console.WriteLine($"{_myDate.GetNow()} - Getting new prayer times.");
-
             var baseUri = GetConfig("PrayersApi, BaseUri");
             var endpoint = GetConfig("PrayersApi, Endpoint");
             var dateToGet = _myDate.GetNow().ToString("dd-MM-yyyy");
             var paramAddress = GetConfig("PrayersApi, ParamAddress");
             var paramMethod = GetConfig("PrayersApi, ParamMethod");
             var paramTune = GetConfig("PrayersApi, ParamTune");
+
+            Console.WriteLine($"{_myDate.GetNow()} - Getting new prayer times...");
 
             using (var client = new HttpClient())
             {
